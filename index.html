@@ -549,7 +549,13 @@ $("excelReport").onclick=async()=>{
 $("pdfReport").onclick=()=>{
  if(!reportRows.length)filterReport();const t=reportTotals(reportRows),w=window.open("","_blank");
  const rows=reportRows.map(x=>{const v=reportVals(x);return `<tr><td>${x.date||""}</td><td>${x.driverName||""}</td><td>${x.vehicleNo||""}</td><td>${x.__mode}</td><td>${money(v.earnings)}</td><td>${money(v.salary)}</td><td>${money(v.petrol)}</td><td>${money(v.cng)}</td><td>${money(v.other)}</td><td>${money(v.expense)}</td><td><b>${money(v.net)}</b></td><td>${money(v.cash)}</td><td>${money(v.balance)}</td></tr>`}).join("");
- w.document.write(`<html><head><title>SST Report</title><style>@page{size:A4 landscape;margin:9mm}body{font-family:Arial;padding:8px;color:#0b1f35}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:5px;font-size:9px;text-align:right}th{background:#062a50;color:white}th:nth-child(-n+4),td:nth-child(-n+4){text-align:left}.total{font-weight:800;background:#fff3c4}h2{margin:0 0 4px}.summary{margin:10px 0;font-weight:bold}</style></head><body><h2>Sri Selvam Tours and Travels</h2><div>SST Daily / Monthly Report</div><p>Generated: ${new Date().toLocaleString()}</p><div class="summary">Total Earnings: ${money(t.earnings)} &nbsp; | &nbsp; Total Expenses: ${money(t.expense)} &nbsp; | &nbsp; Total Net Earnings: ${money(t.net)}</div><table><tr><th>Date</th><th>Driver</th><th>Vehicle</th><th>Type</th><th>Earnings</th><th>Salary</th><th>Petrol</th><th>CNG</th><th>Other</th><th>Total Exp.</th><th>Net Earnings</th><th>Cash</th><th>Balance</th></tr>${rows}<tr class="total"><td colspan="4">GRAND TOTAL</td><td>${money(t.earnings)}</td><td>${money(t.salary)}</td><td>${money(t.petrol)}</td><td>${money(t.cng)}</td><td>${money(t.other)}</td><td>${money(t.expense)}</td><td>${money(t.net)}</td><td>${money(t.cash)}</td><td>${money(t.balance)}</td></tr></table><scr${""}ipt>window.onload=()=>window.print()<\/script></body></html>`);
+ w.document.write(`<html><head><title>SST Report</title><style>@page{size:A4 landscape;margin:9mm}body{font-family:Arial;padding:8px;color:#0b1f35}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:5px;font-size:9px;text-align:right}th{background:#062a50;color:white}th:nth-child(-n+4),td:nth-child(-n+4){text-align:left}.total{font-weight:800;background:#fff3c4}h2{margin:0 0 4px}.summary{margin:10px 0;font-weight:bold}</style></head><body><h2>Sri Selvam Tours and Travels</h2><div>SST Daily / Monthly Report</div><p>Generated: ${new Date().toLocaleString()}</p><div class="summary">Total Earnings: ${money(t.earnings)} &nbsp; | &nbsp; Total Expenses: ${money(t.expense)} &nbsp; | &nbsp; Total Net Earnings: ${money(t.net)}</div><table><tr><th>Date</th><th>Driver</th><th>Vehicle</th><th>Type</th><th>Earnings</th><th>Salary</th><th>Petrol</th><th>CNG</th><th>Other</th><th>Total Exp.</th><th>Net Earnings</th><th>Cash</th><th>Balance</th></tr>${rows}<tr class="total"><td colspan="4">GRAND TOTAL</td><td>${money(t.earnings)}</td><td>${money(t.salary)}</td><td>${money(t.petrol)}</td><td>${money(t.cng)}</td><td>${money(t.other)}</td><td>${money(t.expense)}</td><td>${money(t.net)}</td><td>${money(t.cash)}</td><td>${money(t.balance)}</td></tr></table><script>window.onload=()=>window.print()<\/script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(console.error));
+}
+</script>
+</body></html>`);
  w.document.close()
 }
 
@@ -999,13 +1005,6 @@ async function loadVehicleServices(){if(!idToken)return;try{await loadVehicleMas
 window.editVehicleService=id=>{const r=vehicleServiceRows.find(x=>x.__id===id);if(!r)return;vsEditId=id;const vals={vsVehicle:r.vehicleId,vsOdo:r.odometer,vsDate:r.serviceDate,vsServiceKm:r.serviceKm,vsType:r.serviceType,vsOil:r.engineOil,vsParts:r.parts,vsPartsCost:r.partsCost,vsLabour:r.labourCost,vsOther:r.otherCost,vsWorkshop:r.workshop,vsNextKm:r.nextServiceKm,vsNextDate:r.nextServiceDate,vsNotes:r.notes};Object.entries(vals).forEach(([id,v])=>{if($(id))$(id).value=v??''});setStatus("vsStatus","Service record opened for editing.")};
 window.deleteVehicleService=async id=>{if(userProfile?.role!=="admin")return;if(!confirm("Delete this service record?"))return;try{await fsDelete("vehicle_services",id);await loadVehicleServices()}catch(e){setStatus("vsStatus","Delete failed: "+e.message,"err")}};
 $("saveVehicleService")?.addEventListener("click",saveVehicleServiceNow);$("refreshVehicleService")?.addEventListener("click",loadVehicleServices);$("clearVehicleService")?.addEventListener("click",clearVehicleService);document.querySelector('[data-sec="vehicleServiceSection"]')?.addEventListener('click',loadVehicleServices);clearVehicleService();setTimeout(loadVehicleServices,1900);
-
-// PWA service worker registration (GitHub Pages sub-path safe)
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js").catch(err => console.warn("Service worker registration failed", err));
-  });
-}
 </script>
 </body>
 </html>
