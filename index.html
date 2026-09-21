@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#061a2d">
 <title>SST Driver Management</title>
+<meta name="application-name" content="SST Driver App">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SST Driver">
 <style>
 :root{--navy:#061a2d;--blue:#124f89;--bg:#eef3f8;--card:#fff;--muted:#64748b;--green:#0b7a4b;--red:#a32929;--gold:#b58a35}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#132033}
@@ -30,12 +34,12 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px
 @media print{header,.nav,.noPrint,#login{display:none!important}body{background:#fff}.card{box-shadow:none;border:0}.section{display:none!important}#invoiceSection.printing{display:block!important}main{max-width:none;padding:0}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"><\/script>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-512.png">
 </head>
 <body><div id="sstStartup" style="position:fixed;inset:0;z-index:999999;background:#031b38;display:flex;align-items:center;justify-content:center;overflow:hidden;width:100vw;height:100dvh;">
-<img src="splash.png" alt="Sri Selvam Tours and Travels Driver App" style="display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#031b38;">
+<img src="./splash.png" alt="Sri Selvam Tours and Travels Driver App" style="display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#031b38;">
 </div>
 <script>
 (function(){
@@ -66,7 +70,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px
 <section id="app">
 <header>
   <div class="headerRow">
-    <div><b>Sri Selvam Tours and Travels</b><small id="headerSub">SST Driver Management</small><small style="opacity:.7">Version 5.3</small></div>
+    <div><b>Sri Selvam Tours and Travels</b><small id="headerSub">SST Driver Management</small><small style="opacity:.7">Version 5.4 PWA</small></div>
     <div class="hdrBtns"><button id="langBtn" class="btn alt">தமிழ்</button><button id="logoutTop" class="btn danger">Logout</button></div>
   </div>
 </header>
@@ -549,7 +553,16 @@ $("excelReport").onclick=async()=>{
 $("pdfReport").onclick=()=>{
  if(!reportRows.length)filterReport();const t=reportTotals(reportRows),w=window.open("","_blank");
  const rows=reportRows.map(x=>{const v=reportVals(x);return `<tr><td>${x.date||""}</td><td>${x.driverName||""}</td><td>${x.vehicleNo||""}</td><td>${x.__mode}</td><td>${money(v.earnings)}</td><td>${money(v.salary)}</td><td>${money(v.petrol)}</td><td>${money(v.cng)}</td><td>${money(v.other)}</td><td>${money(v.expense)}</td><td><b>${money(v.net)}</b></td><td>${money(v.cash)}</td><td>${money(v.balance)}</td></tr>`}).join("");
- w.document.write(`<html><head><title>SST Report</title><style>@page{size:A4 landscape;margin:9mm}body{font-family:Arial;padding:8px;color:#0b1f35}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:5px;font-size:9px;text-align:right}th{background:#062a50;color:white}th:nth-child(-n+4),td:nth-child(-n+4){text-align:left}.total{font-weight:800;background:#fff3c4}h2{margin:0 0 4px}.summary{margin:10px 0;font-weight:bold}</style></head><body><h2>Sri Selvam Tours and Travels</h2><div>SST Daily / Monthly Report</div><p>Generated: ${new Date().toLocaleString()}</p><div class="summary">Total Earnings: ${money(t.earnings)} &nbsp; | &nbsp; Total Expenses: ${money(t.expense)} &nbsp; | &nbsp; Total Net Earnings: ${money(t.net)}</div><table><tr><th>Date</th><th>Driver</th><th>Vehicle</th><th>Type</th><th>Earnings</th><th>Salary</th><th>Petrol</th><th>CNG</th><th>Other</th><th>Total Exp.</th><th>Net Earnings</th><th>Cash</th><th>Balance</th></tr>${rows}<tr class="total"><td colspan="4">GRAND TOTAL</td><td>${money(t.earnings)}</td><td>${money(t.salary)}</td><td>${money(t.petrol)}</td><td>${money(t.cng)}</td><td>${money(t.other)}</td><td>${money(t.expense)}</td><td>${money(t.net)}</td><td>${money(t.cash)}</td><td>${money(t.balance)}</td></tr></table><script>window.onload=()=>window.print()<\/script></body></html>`);
+ w.document.write(`<html><head><title>SST Report</title><style>@page{size:A4 landscape;margin:9mm}body{font-family:Arial;padding:8px;color:#0b1f35}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:5px;font-size:9px;text-align:right}th{background:#062a50;color:white}th:nth-child(-n+4),td:nth-child(-n+4){text-align:left}.total{font-weight:800;background:#fff3c4}h2{margin:0 0 4px}.summary{margin:10px 0;font-weight:bold}</style></head><body><h2>Sri Selvam Tours and Travels</h2><div>SST Daily / Monthly Report</div><p>Generated: ${new Date().toLocaleString()}</p><div class="summary">Total Earnings: ${money(t.earnings)} &nbsp; | &nbsp; Total Expenses: ${money(t.expense)} &nbsp; | &nbsp; Total Net Earnings: ${money(t.net)}</div><table><tr><th>Date</th><th>Driver</th><th>Vehicle</th><th>Type</th><th>Earnings</th><th>Salary</th><th>Petrol</th><th>CNG</th><th>Other</th><th>Total Exp.</th><th>Net Earnings</th><th>Cash</th><th>Balance</th></tr>${rows}<tr class="total"><td colspan="4">GRAND TOTAL</td><td>${money(t.earnings)}</td><td>${money(t.salary)}</td><td>${money(t.petrol)}</td><td>${money(t.cng)}</td><td>${money(t.other)}</td><td>${money(t.expense)}</td><td>${money(t.net)}</td><td>${money(t.cash)}</td><td>${money(t.balance)}</td></tr></table><script>window.onload=()=>window.print()<\/script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js", {scope:"./"})
+      .catch(function(err){ console.log("SW registration failed", err); });
+  });
+}
+</script>
+</body></html>`);
  w.document.close()
 }
 
@@ -985,7 +998,16 @@ async function loadDriverMaster(){if(!idToken)return;try{await loadVehicleMaster
 window.editDriverMaster=id=>{const r=driverMasterRows.find(x=>x.__id===id);if(!r)return;dmEditId=id;dmDocs={photo:r.photo||"",aadhaarDoc:r.aadhaarDoc||"",dlDoc:r.dlDoc||"",otherDoc:r.otherDoc||""};const m={dmName:r.name,dmMobile:r.mobile,dmAddress:r.address,dmDob:r.dob,dmJoin:r.joiningDate,dmBlood:r.bloodGroup,dmEmergency:r.emergency,dmVehicle:r.vehicleId,dmAadhaar:r.aadhaar,dmPan:r.pan,dmDl:r.dlNo,dmDlExpiry:r.dlExpiry,dmBadge:r.badgeNo,dmBadgeExpiry:r.badgeExpiry,dmSalary:r.salary,dmActive:String(r.active!==false),dmNotes:r.notes};Object.entries(m).forEach(([id,v])=>{if($(id))$(id).value=v??''});setStatus("dmStatus","Driver opened for editing. Existing documents stay unless replaced.")};
 window.deleteDriverMaster=async id=>{if(userProfile?.role!=="admin"||!confirm("Delete this driver master record?"))return;try{await fsDelete("driver_master",id);await loadDriverMaster()}catch(e){setStatus("dmStatus","Delete failed: "+e.message,"err")}};
 window.showJoiningLetter=id=>{const r=driverMasterRows.find(x=>x.__id===id);if(!r)return;$("joiningLetterPreview").innerHTML=`<div id="joiningPrintable" style="background:white;color:#111;padding:28px;border-radius:12px"><div style="text-align:center"><h2 style="margin:0">SRI SELVAM TOURS AND TRAVELS</h2><div>Driver Joining Letter & Terms and Conditions</div></div><hr><p>Date: <b>${esc(r.joiningDate||'')}</b></p><p>To,<br><b>${esc(r.name)}</b><br>${esc(r.address||'')}</p><p>Dear ${esc(r.name)},</p><p>We are pleased to record your joining with Sri Selvam Tours and Travels as a Driver from <b>${esc(r.joiningDate||'')}</b>${r.vehicleNo?` and your currently assigned vehicle is <b>${esc(r.vehicleNo)} ${esc(r.vehicleModel||'')}</b>`:''}. Salary / commission arrangement: <b>${esc(r.salary||'As agreed with management')}</b>.</p><h3>Terms & Conditions</h3><ol><li>Maintain a valid driving licence, badge and all legally required driver documents throughout employment.</li><li>Follow traffic laws, drive safely, and use the assigned vehicle only for authorised company duties.</li><li>Alcohol, intoxicating drugs, dangerous driving, mobile-phone use while driving, and abusive behaviour with customers are prohibited.</li><li>Report accidents, breakdowns, challans, vehicle damage and customer complaints to management immediately.</li><li>Keep the vehicle clean and check fuel/CNG, tyres, lights, brakes, fluids and warning indicators before duty.</li><li>Fuel, toll, parking, cash collections and trip expenses must be entered accurately with bills where required.</li><li>Do not misuse customer contact information, company booking information, vehicle documents or app access.</li><li>Leave, duty changes, vehicle handover and resignation/notice must follow the arrangement communicated by management and applicable law.</li><li>Any loss or damage will be reviewed based on facts, company policy and applicable law; deductions will not be automatic merely because an incident occurred.</li><li>Company operational rules may be updated and communicated from time to time, subject to applicable law.</li></ol><p>I confirm that the details and documents submitted by me are genuine and that I have read and understood the above terms.</p><div style="display:flex;justify-content:space-between;margin-top:55px"><div>____________________<br>Driver Signature<br>${esc(r.name)}</div><div style="text-align:right">____________________<br>S. Sivabalaji<br>Proprietor<br>Sri Selvam Tours and Travels</div></div></div>`;$("joiningLetterPreview").scrollIntoView({behavior:'smooth'})};
-$("printJoiningLetter")?.addEventListener("click",()=>{if(!$("joiningLetterPreview").innerText.trim()){alert("Generate a joining letter first");return}const w=window.open('','_blank');w.document.write('<html><head><title>SST Driver Joining Letter</title><style>body{font-family:Arial,sans-serif;padding:30px;line-height:1.45}ol li{margin:7px 0}</style></head><body>'+$("joiningLetterPreview").innerHTML+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)});
+$("printJoiningLetter")?.addEventListener("click",()=>{if(!$("joiningLetterPreview").innerText.trim()){alert("Generate a joining letter first");return}const w=window.open('','_blank');w.document.write('<html><head><title>SST Driver Joining Letter</title><style>body{font-family:Arial,sans-serif;padding:30px;line-height:1.45}ol li{margin:7px 0}</style></head><body>'+$("joiningLetterPreview").innerHTML+'
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js", {scope:"./"})
+      .catch(function(err){ console.log("SW registration failed", err); });
+  });
+}
+</script>
+</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)});
 $("saveDriverMaster")?.addEventListener("click",saveDriverMasterNow);$("refreshDriverMaster")?.addEventListener("click",loadDriverMaster);$("clearDriverMaster")?.addEventListener("click",clearDriverMaster);document.querySelector('[data-sec="driverMasterSection"]')?.addEventListener('click',loadDriverMaster);clearDriverMaster();setTimeout(loadDriverMaster,2100);
 
 // ===== Vehicle Service Record v5.2 =====
@@ -999,6 +1021,15 @@ async function loadVehicleServices(){if(!idToken)return;try{await loadVehicleMas
 window.editVehicleService=id=>{const r=vehicleServiceRows.find(x=>x.__id===id);if(!r)return;vsEditId=id;const vals={vsVehicle:r.vehicleId,vsOdo:r.odometer,vsDate:r.serviceDate,vsServiceKm:r.serviceKm,vsType:r.serviceType,vsOil:r.engineOil,vsParts:r.parts,vsPartsCost:r.partsCost,vsLabour:r.labourCost,vsOther:r.otherCost,vsWorkshop:r.workshop,vsNextKm:r.nextServiceKm,vsNextDate:r.nextServiceDate,vsNotes:r.notes};Object.entries(vals).forEach(([id,v])=>{if($(id))$(id).value=v??''});setStatus("vsStatus","Service record opened for editing.")};
 window.deleteVehicleService=async id=>{if(userProfile?.role!=="admin")return;if(!confirm("Delete this service record?"))return;try{await fsDelete("vehicle_services",id);await loadVehicleServices()}catch(e){setStatus("vsStatus","Delete failed: "+e.message,"err")}};
 $("saveVehicleService")?.addEventListener("click",saveVehicleServiceNow);$("refreshVehicleService")?.addEventListener("click",loadVehicleServices);$("clearVehicleService")?.addEventListener("click",clearVehicleService);document.querySelector('[data-sec="vehicleServiceSection"]')?.addEventListener('click',loadVehicleServices);clearVehicleService();setTimeout(loadVehicleServices,1900);
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js", {scope:"./"})
+      .catch(function(err){ console.log("SW registration failed", err); });
+  });
+}
 </script>
 </body>
 </html>
