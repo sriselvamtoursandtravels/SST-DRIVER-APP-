@@ -70,7 +70,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px
 <section id="app">
 <header>
   <div class="headerRow">
-    <div><b>Sri Selvam Tours and Travels</b><small id="headerSub">SST Driver Management</small><small style="opacity:.7">Version 5.4.5</small></div>
+    <div><b>Sri Selvam Tours and Travels</b><small id="headerSub">SST Driver Management</small><small style="opacity:.7">Version 5.4.6</small></div>
     <div class="hdrBtns"><button id="langBtn" class="btn alt">தமிழ்</button><button id="logoutTop" class="btn danger">Logout</button></div>
   </div>
 </header>
@@ -746,8 +746,22 @@ $("saveDriverAssignment")?.addEventListener("click",async()=>{if(bk("bkDriverNam
 $("sendDriverDetails")?.addEventListener("click",async()=>{if(bk("bkDriverName"))$("bkStatus").value="Driver Assigned";let x=await saveBookingNow();if(x)sendWA(x.mobile,driverMsgBk(x))});
 $("clearBooking")?.addEventListener("click",()=>{currentBookingId=null;["bkCustomer","bkMobile","bkFrom","bkTo","bkVehicleType","bkPickup","bkDrop","bkFare","bkAdvance","bkExtras","bkDriverName","bkDriverMobile","bkVehicleNo","bkVehicleModel","bkAssignedVehicleType"].forEach(id=>$(id).value="");$("bkTripType").value="Round Trip";$("bkStatus").value="Enquiry";setStatus("bookingStatus","")});
 $("refreshBookings")?.addEventListener("click",loadBookings);
-async function loadBookings(){if(userProfile?.role!=="admin")return;try{let d=await fsQuery("customer_bookings",false,500);bookingRows=d.sort((a,b)=>String(b.pickupDateTime||"").localeCompare(String(a.pickupDateTime||"")));$("bookingList").innerHTML=bookingRows.length?bookingRows.map(x=>`<div class="row"><div class="rowHead"><div><b>${esc(x.customerName||"-")} · ${esc(x.status||"Enquiry")}</b><div>${esc(x.from||"")} → ${esc(x.to||"")}</div><div class="tiny">${esc(niceDT(x.pickupDateTime))} · ${esc(x.vehicleType||"")} · ${money(x.fare||0)}</div>${x.driverName?`<div class="tiny">Driver: ${esc(x.driverName)} · ${esc(x.vehicleNo||"")}</div>`:""}</div><div class="rowActions"><button class="btn alt" onclick="editBooking('${x.__id}')">Open / Edit</button></div></div></div>`).join(""):`<div class="tiny">No bookings yet.</div>`}catch(e){$("bookingList").innerHTML=`<div class="status err">${esc(e.message)}</div>`}}
+async function loadBookings(){if(userProfile?.role!=="admin")return;try{let d=await fsQuery("customer_bookings",false,500);bookingRows=d.sort((a,b)=>String(b.pickupDateTime||"").localeCompare(String(a.pickupDateTime||"")));$("bookingList").innerHTML=bookingRows.length?bookingRows.map(x=>`<div class="row"><div class="rowHead"><div><b>${esc(x.customerName||"-")} · ${esc(x.status||"Enquiry")}</b><div>${esc(x.from||"")} → ${esc(x.to||"")}</div><div class="tiny">${esc(niceDT(x.pickupDateTime))} · ${esc(x.vehicleType||"")} · ${money(x.fare||0)}</div>${x.driverName?`<div class="tiny">Driver: ${esc(x.driverName)} · ${esc(x.vehicleNo||"")}</div>`:""}</div><div class="rowActions"><button class="btn alt" onclick="editBooking('${x.__id}')">Open / Edit</button><button class="btn danger" onclick="deleteBooking('${x.__id}')">Delete Booking</button></div></div></div>`).join(""):`<div class="tiny">No bookings yet.</div>`}catch(e){$("bookingList").innerHTML=`<div class="status err">${esc(e.message)}</div>`}}
 window.editBooking=id=>{let x=bookingRows.find(a=>a.__id===id);if(!x)return;currentBookingId=id;let m={bkCustomer:"customerName",bkMobile:"mobile",bkFrom:"from",bkTo:"to",bkTripType:"tripType",bkVehicleType:"vehicleType",bkPickup:"pickupDateTime",bkDrop:"dropDateTime",bkFare:"fare",bkAdvance:"advance",bkExtras:"extras",bkStatus:"status",bkDriverName:"driverName",bkDriverMobile:"driverMobile",bkVehicleNo:"vehicleNo",bkVehicleModel:"vehicleModel",bkAssignedVehicleType:"assignedVehicleType"};Object.entries(m).forEach(([a,b])=>$(a).value=x[b]??"");setStatus("bookingStatus","Booking opened for editing")};
+window.deleteBooking=async id=>{
+  if(userProfile?.role!=="admin"){alert("Admin only");return}
+  const x=bookingRows.find(a=>a.__id===id);
+  if(!x)return;
+  const label=[x.customerName,x.from&&x.to?`${x.from} → ${x.to}`:""] .filter(Boolean).join(" · ");
+  if(!confirm(`Delete this booking permanently?\n\n${label}\n\nThis will also remove it from the assigned driver's My Trips.`))return;
+  try{
+    await fsDelete("customer_bookings",id);
+    if(currentBookingId===id){currentBookingId=null;$("clearBooking")?.click()}
+    setStatus("bookingStatus","Booking deleted successfully ✓");
+    await loadBookings();
+    if($("myTripsSection")?.classList.contains("active")) await loadMyTrips();
+  }catch(e){setStatus("bookingStatus","Delete failed: "+e.message,true)}
+};
 
 // ===== Assigned Driver Trips v4.4 =====
 let assignableDrivers=[];
